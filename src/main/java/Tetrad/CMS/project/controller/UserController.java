@@ -19,7 +19,7 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     User newUser(@RequestBody User newUser){
         return userRepository.save(newUser);
     }
@@ -29,11 +29,22 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/users/{id}")
     User getUser(@PathVariable Long id){
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
+    @PutMapping("/users/{id}")
+    User updateUser(@RequestBody User newUser,@PathVariable Long id){
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setName(newUser.getName());
+                    user.setUsername(newUser.getUsername());
+                    user.setEmail(newUser.getEmail());
+                    return userRepository.save(user);
+                }).orElseThrow(() -> new UserNotFoundException(id));
+
+    }
 
 
 }
