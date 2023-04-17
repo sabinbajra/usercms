@@ -1,5 +1,6 @@
 package Tetrad.CMS.project.controller;
 
+import Tetrad.CMS.project.exception.UserNotFoundException;
 import Tetrad.CMS.project.model.User;
 import Tetrad.CMS.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 public class UserController {
 
     private UserRepository userRepository;
@@ -28,8 +30,10 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    Optional<User> getUser(@PathVariable("id") Long id){
-        return userRepository.findById(id);
+    User getUser(@PathVariable Long id){
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
+
+
 
 }
